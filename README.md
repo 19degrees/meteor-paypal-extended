@@ -73,7 +73,7 @@ Documentation](https://developer.paypal.com/webapps/developer/docs/api/#payments
 
 For additional information on fields, check out the [Paypal REST API documentation](https://developer.paypal.com/docs/api/)
 
-Store a credit card in the Vault:
+**Store a credit card in the Vault:**
 
 ``` javascript
       var cardData = {
@@ -94,10 +94,10 @@ Store a credit card in the Vault:
       });
 ```
 
-Pay with a stored card:
+**Pay with a stored card:**
 
 ``` javascript
-      var cardData = { credit_card_id: "CARD-7XT34685RB132680FKVNVW2Y" }; // you'd put your own stored card reference here
+      var cardData = { credit_card_id: "CARD-7XT34685RB132680FKVNVW2Y" }; // stored card reference
 
       Meteor.Paypal.purchase(cardData, {total: '6.50', currency: 'GBP'}, function(err, results){
         if (err) console.error(err);
@@ -105,11 +105,11 @@ Pay with a stored card:
       });
 ```
 
-Delete a stored card
+**Delete a stored card**
 
 ``` javascript
 
-      var cardRef = "CARD-7XT34685RB132680FKVNVW2Y"; // you'd put your own stored card reference here
+      var cardRef = "CARD-7XT34685RB132680FKVNVW2Y"; // stored card reference
 
       Meteor.Paypal.vaultDelete(cardRef, function(err, results){
         if (err) console.error(err);
@@ -118,11 +118,11 @@ Delete a stored card
 
 ``` 
 
-Get details back for a stored card
+**Get details back for a stored card**
 
 ``` javascript
 
-      var cardRef = "CARD-7XT34685RB132680FKVNVW2Y"; // you'd put your own stored card reference here
+      var cardRef = "CARD-7XT34685RB132680FKVNVW2Y"; // stored card reference
 
       Meteor.Paypal.vaultGet(cardRef, function(err, results){
         if (err) console.error(err);
@@ -131,11 +131,11 @@ Get details back for a stored card
 
 ``` 
 
-Lookup card details based on a filter
+**Lookup card details based on a filter**
 
 ``` javascript
 
-      var cardFilter = "?merchant_id=yourcompanyname"; // lookup based on any of the parameters you stored with the card
+      var cardFilter = "?merchant_id=yourcompanyname"; // use any parameters you stored with the card
 
       Meteor.Paypal.vaultList(cardFilter, function(err, results){
         if (err) console.error(err);
@@ -143,12 +143,12 @@ Lookup card details based on a filter
       });
 ```
 
-Lookup a sale
+**Lookup a sale**
 
 
 ``` javascript
 
-      var txRef = "86P78153J2013135X"; // returned when you execute a payment with the basic API / or get it off your PP developer dashboard
+      var txRef = "86P78153J2013135X"; // returned when you execute a payment 
 
       Meteor.Paypal.saleLookup(txRef, function(err, results){
         if (err) console.error(err);
@@ -156,13 +156,14 @@ Lookup a sale
       });
 ```
 
-Refund a sale
+**Refund a sale**
 
 ``` javascript
 
       var txRef = "86P78153J2013135X"; // returned when you execute a payment
+      var refundInfo = {total: '2.00', currency: 'GBP'}
 
-      Meteor.Paypal.saleRefund(txRef, {total: '2.00', currency: 'GBP'}, function(err, results){
+      Meteor.Paypal.saleRefund(txRef, refundInfo, function(err, results){
         if (err) console.error(err);
         else console.log(results);
       });
