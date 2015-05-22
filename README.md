@@ -1,7 +1,7 @@
 Paypal for Meteor
 =============
 
-Meteor Package for easy Paypal payment processing based on David Brear's version. Now extended to support the following additional functions:
+Meteor Package for easy Paypal payment processing, extended to support the following additional features supported by the REST API:
 
 - Store card details in the vault
 - Use a stored card for a transaction
@@ -67,7 +67,6 @@ For information on the **payment** object returned see [Paypal's Payment Option 
 Transaction types are: `Meteor.Paypal.authorize` and
 `Meteor.Paypal.purchase` for the difference, see [Paypal's
 Documentation](https://developer.paypal.com/webapps/developer/docs/api/#payments)
-#### Extras
 
 #### Enhanced Features
 
