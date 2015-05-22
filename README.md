@@ -1,11 +1,21 @@
 Paypal for Meteor
 =============
 
-Meteor Package for easy Paypal payment processing.
+Meteor Package for easy Paypal payment processing based on David Brear's version. Now extended to support the following additional functions:
+
+- Store card details in the vault
+- Use a stored card for a transaction
+- Delete a stored card
+- Lookup stored details for a specific card
+- List all cards based on filter criteria
+- Lookup a sale to verify it has been successful
+- Refund a sale (partial/full)
+
+If you only require basic authorisation / ability to make a payment then use the [original package](https://github.com/DavidBrear/meteor-paypal )
 
 ### Usage
 ```console
-mrt add paypal
+meteor add sandelld:paypal
 ```
 
 #### Setup
@@ -38,8 +48,8 @@ Format is `Meteor.Paypal.*transaction_type*({ {/*card data*/}, {/*transaction da
       expire_month: '01'
     },
     {
-      total: '100.10',
-      currency: 'USD'
+      total: '100.00',
+      currency: 'GBP'
     },
     function(error, results){
       if(error)
@@ -59,24 +69,105 @@ Transaction types are: `Meteor.Paypal.authorize` and
 Documentation](https://developer.paypal.com/webapps/developer/docs/api/#payments)
 #### Extras
 
-Include `{{> paypalCreditCardForm }}` in a template. In the template's javascript file, include: 
+#### Enhanced Features
+
+For additional information on fields, check out the [Paypal REST API documentation](https://developer.paypal.com/docs/api/)
+
+Store a credit card in the Vault:
+
 ``` javascript
-  Template.paypalCreditCardForm.events({
-    'submit #paypal-payment-form': function(evt, tmp){
-      evt.preventDefault();
-      
-      var card_data = Template.paypalCreditCardForm.card_data();
-      
-      //Probably a good idea to disable the submit button here to prevent multiple submissions.
-      
-      Meteor.Paypal.purchase(card_data, {total: '100.50', currency: 'USD'}, function(err, results){
+      var cardData = {
+      name: 'Buster Bluth',
+      number: '4111111111111111',
+      type: 'visa',
+      cvv2: '123',
+      expire_year: '2015',
+      expire_month: '01'
+      external_customer_id: "123456789",
+      merchant_id: "company_name",
+      external_card_id: "abcdefghijk123457" 
+      };
+
+      Meteor.Paypal.vaultCreate(cardData, function(err, results){
         if (err) console.error(err);
         else console.log(results);
       });
-    }
-  });
 ```
+
+Pay with a stored card:
+
+``` javascript
+      var cardData = { credit_card_id: "CARD-7XT34685RB132680FKVNVW2Y" }; // you'd put your own stored card reference here
+
+      Meteor.Paypal.purchase(cardData, {total: '6.50', currency: 'GBP'}, function(err, results){
+        if (err) console.error(err);
+        else console.log(results);
+      });
+```
+
+Delete a stored card
+
+``` javascript
+
+      var cardRef = "CARD-7XT34685RB132680FKVNVW2Y"; // you'd put your own stored card reference here
+
+      Meteor.Paypal.vaultDelete(cardRef, function(err, results){
+        if (err) console.error(err);
+        else console.log(results);
+      });
+
+``` 
+
+Get details back for a stored card
+
+``` javascript
+
+      var cardRef = "CARD-7XT34685RB132680FKVNVW2Y"; // you'd put your own stored card reference here
+
+      Meteor.Paypal.vaultGet(cardRef, function(err, results){
+        if (err) console.error(err);
+        else console.log(results);
+      });
+
+``` 
+
+Lookup card details based on a filter
+
+``` javascript
+
+      var cardFilter = "?merchant_id=yourcompanyname"; // lookup based on any of the parameters you stored with the card
+
+      Meteor.Paypal.vaultList(cardFilter, function(err, results){
+        if (err) console.error(err);
+        else console.log(results);
+      });
+```
+
+Lookup a sale
+
+
+``` javascript
+
+      var txRef = "86P78153J2013135X"; // returned when you execute a payment with the basic API / or get it off your PP developer dashboard
+
+      Meteor.Paypal.saleLookup(txRef, function(err, results){
+        if (err) console.error(err);
+        else console.log(results);
+      });
+```
+
+Refund a sale
+
+``` javascript
+
+      var txRef = "86P78153J2013135X"; // returned when you execute a payment
+
+      Meteor.Paypal.saleRefund(txRef, {total: '2.00', currency: 'GBP'}, function(err, results){
+        if (err) console.error(err);
+        else console.log(results);
+      });
+``` 
 
 ### Acknowledgements
 
-Special Thanks to Phillip Jacobs ([@phillyqueso](https://twitter.com/phillyqueso)) for his help with Fibers and Futures without which, this project would've failed.
+Full credit to David Brear for building the package, I've just extended his work to include additional features that I needed for my project.
