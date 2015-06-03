@@ -1,5 +1,7 @@
-Paypal for Meteor
+Server Side PayPal for Meteor
 =============
+
+This package is a fork of https://github.com/sandelld/meteor-paypal-extended, limiting PayPal functions to server side only for security purpose. In Sandelld's package, the PayPal functions are exposed to the client side, allowing anyone to pull card details from vault which is very *dangerous*.
 
 Meteor Package for easy Paypal payment processing, extended to support the following additional features supported by the REST API:
 
@@ -15,7 +17,7 @@ If you only require basic authorisation / ability to make a payment then use the
 
 ### Usage
 ```console
-meteor add sandelld:paypal
+meteor add 19degrees:paypal
 ```
 
 #### Setup
@@ -26,7 +28,7 @@ Create a sandbox application and copy your *REST API CREDENTIALS*.
 
 Create a file `server/paypal_config.js` including:
 ``` javascript
-  Meteor.Paypal.config({
+  Paypal.config({
     'host': 'api.sandbox.paypal.com',
     'port': '',
     'client_id': 'Your Paypal Client Id',
@@ -36,10 +38,10 @@ Create a file `server/paypal_config.js` including:
 
 #### Basic
 
-Format is `Meteor.Paypal.*transaction_type*({ {/*card data*/}, {/*transaction data*/}, function(err, res){...})`
+Format is `Paypal.*transaction_type*({ {/*card data*/}, {/*transaction data*/}, function(err, res){...})`
 
 ```javascript
-  Meteor.Paypal.authorize({
+  Paypal.authorize({
       name: 'Buster Bluth',
       number: '4111111111111111',
       type: 'visa',
@@ -49,7 +51,7 @@ Format is `Meteor.Paypal.*transaction_type*({ {/*card data*/}, {/*transaction da
     },
     {
       total: '100.00',
-      currency: 'GBP'
+      currency: 'HKD'
     },
     function(error, results){
       if(error)
@@ -64,8 +66,8 @@ Format is `Meteor.Paypal.*transaction_type*({ {/*card data*/}, {/*transaction da
 
 For information on the **payment** object returned see [Paypal's Payment Option Documentation](https://developer.paypal.com/webapps/developer/docs/api/#common-payments-objects)
 
-Transaction types are: `Meteor.Paypal.authorize` and
-`Meteor.Paypal.purchase` for the difference, see [Paypal's
+Transaction types are: `Paypal.authorize` and
+`Paypal.purchase` for the difference, see [Paypal's
 Documentation](https://developer.paypal.com/webapps/developer/docs/api/#payments)
 
 #### Enhanced Features
@@ -76,7 +78,7 @@ For additional information on fields, check out the [Paypal REST API documentati
 
 ``` javascript
       var cardData = {
-      name: 'Buster Bluth',
+      //name: 'Buster Bluth',
       number: '4111111111111111',
       type: 'visa',
       cvv2: '123',
@@ -87,7 +89,7 @@ For additional information on fields, check out the [Paypal REST API documentati
       external_card_id: "abcdefghijk123457" 
       };
 
-      Meteor.Paypal.vaultCreate(cardData, function(err, results){
+      Paypal.vaultCreate(cardData, function(err, results){
         if (err) console.error(err);
         else console.log(results);
       });
@@ -98,7 +100,7 @@ For additional information on fields, check out the [Paypal REST API documentati
 ``` javascript
       var cardData = { credit_card_id: "CARD-7XT34685RB132680FKVNVW2Y" }; // stored card reference
 
-      Meteor.Paypal.purchase(cardData, {total: '6.50', currency: 'GBP'}, function(err, results){
+      Paypal.purchase(cardData, {total: '6.50', currency: 'GBP'}, function(err, results){
         if (err) console.error(err);
         else console.log(results);
       });
@@ -110,7 +112,7 @@ For additional information on fields, check out the [Paypal REST API documentati
 
       var cardRef = "CARD-7XT34685RB132680FKVNVW2Y"; // stored card reference
 
-      Meteor.Paypal.vaultDelete(cardRef, function(err, results){
+      Paypal.vaultDelete(cardRef, function(err, results){
         if (err) console.error(err);
         else console.log(results);
       });
@@ -123,7 +125,7 @@ For additional information on fields, check out the [Paypal REST API documentati
 
       var cardRef = "CARD-7XT34685RB132680FKVNVW2Y"; // stored card reference
 
-      Meteor.Paypal.vaultGet(cardRef, function(err, results){
+      Paypal.vaultGet(cardRef, function(err, results){
         if (err) console.error(err);
         else console.log(results);
       });
@@ -136,7 +138,7 @@ For additional information on fields, check out the [Paypal REST API documentati
 
       var cardFilter = "?merchant_id=yourcompanyname"; // use any parameters you stored with the card
 
-      Meteor.Paypal.vaultList(cardFilter, function(err, results){
+      Paypal.vaultList(cardFilter, function(err, results){
         if (err) console.error(err);
         else console.log(results);
       });
@@ -149,7 +151,7 @@ For additional information on fields, check out the [Paypal REST API documentati
 
       var txRef = "86P78153J2013135X"; // returned when you execute a payment 
 
-      Meteor.Paypal.saleLookup(txRef, function(err, results){
+      Paypal.saleLookup(txRef, function(err, results){
         if (err) console.error(err);
         else console.log(results);
       });
@@ -162,7 +164,7 @@ For additional information on fields, check out the [Paypal REST API documentati
       var txRef = "86P78153J2013135X"; // returned when you execute a payment
       var refundInfo = {total: '2.00', currency: 'GBP'}
 
-      Meteor.Paypal.saleRefund(txRef, refundInfo, function(err, results){
+      Paypal.saleRefund(txRef, refundInfo, function(err, results){
         if (err) console.error(err);
         else console.log(results);
       });

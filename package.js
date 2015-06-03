@@ -1,8 +1,8 @@
 Package.describe({
-	summary: "A paypal package that helps make restful API calls to Paypal - extended to support additional methods",
-	version: "1.0.2",
-	name: "sandelld:paypal",
-	git: "https://github.com/sandelld/meteor-paypal.git"
+	summary: "A server side PayPal package that helps make restful API calls to Paypal.",
+	version: "1.0.6",
+	name: "19degrees:paypal",
+	git: "https://github.com/19degrees/meteor-paypal-extended"
 });
 
 Npm.depends({
@@ -11,7 +11,7 @@ Npm.depends({
 
 Package.on_use(function(api) {
 	api.add_files("paypal.js", ["client", "server"]);
-	api.export("Paypal", ["client", "server"]);
+	api.export("Paypal", ["server"]);
 });
 
 Package.on_test(function(api) {

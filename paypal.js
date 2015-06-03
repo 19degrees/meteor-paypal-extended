@@ -1,4 +1,4 @@
-Meteor.Paypal = {
+Paypal = {
 
   account_options: {},
   // authorize submits a payment authorization to Paypal
@@ -116,14 +116,14 @@ if(Meteor.isServer){
       paypal_submit: function(txType, cardData, paymentData, payerInfo) {
         
         //setup app variables from paypal_config.js as defined in the docs
-        paypal_sdk.configure(Meteor.Paypal.account_options);
+        paypal_sdk.configure(Paypal.account_options);
 
         // setup the future
         var fut = new Future();
         this.unblock();
 
         //setup payment json
-        var payment_json = Meteor.Paypal.payment_json();
+        var payment_json = Paypal.payment_json();
 
         //specify transaction type
         payment_json.intent = txType;
@@ -133,13 +133,13 @@ if(Meteor.isServer){
           payment_json.payer = {
             payment_method: 'paypal'
           };
-          payment_json.redirect_urls = Meteor.Paypal.account_options.redirect_urls;
+          payment_json.redirect_urls = Paypal.account_options.redirect_urls;
         } else {
-          payment_json.payer.funding_instruments.push(Meteor.Paypal.parseCardData(cardData));
+          payment_json.payer.funding_instruments.push(Paypal.parseCardData(cardData));
         }
         
         // format payment data 
-        payment_json.transactions.push(Meteor.Paypal.parsePaymentData(paymentData));
+        payment_json.transactions.push(Paypal.parsePaymentData(paymentData));
         
         // create the payment 
           paypal_sdk.payment.create(payment_json, Meteor.bindEnvironment(function(err, payment){
@@ -159,7 +159,7 @@ if(Meteor.isServer){
     paypal_vault: function(txType, cardData, cardRef) {
         
         //setup app variables from paypal_config.js as defined in the docs
-        paypal_sdk.configure(Meteor.Paypal.account_options);
+        paypal_sdk.configure(Paypal.account_options);
 
         // setup the future
         var fut = new Future();
@@ -220,7 +220,7 @@ if(Meteor.isServer){
     },
     paypal_sale: function(txType, saleId, refund_data) {
         //setup app variables from paypal_config.js as defined in the docs
-        paypal_sdk.configure(Meteor.Paypal.account_options);
+        paypal_sdk.configure(Paypal.account_options);
 
         // setup the future
         var fut = new Future();
@@ -229,7 +229,7 @@ if(Meteor.isServer){
         // check what type of sale transaction we're dealing with
         switch (txType) {
           case 'refund': // partial/full refund
-              paypal_sdk.sale.refund(saleId, Meteor.Paypal.parsePaymentData(refund_data), Meteor.bindEnvironment(function(err, result){
+              paypal_sdk.sale.refund(saleId, Paypal.parsePaymentData(refund_data), Meteor.bindEnvironment(function(err, result){
                   if (err){
                     fut.return({success: false, error: err});
                   } else {
@@ -258,8 +258,8 @@ if(Meteor.isServer){
   }); // Meteor.methods
 
 // execute the payment 
-Meteor.Paypal.execute = function execute(payment_id, payer_id, callback) {
-  paypal_sdk.payment.execute(payment_id, {payer_id: payer_id}, Meteor.Paypal.account_options, callback);
+Paypal.execute = function execute(payment_id, payer_id, callback) {
+  paypal_sdk.payment.execute(payment_id, {payer_id: payer_id}, Paypal.account_options, callback);
 };
 
 }); // Meteor.isServer
