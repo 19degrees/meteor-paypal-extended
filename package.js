@@ -1,7 +1,7 @@
 Package.describe({
 	summary: "A server side PayPal package that helps make restful API calls to Paypal.",
-	version: "1.2.0",
-	name: "19degrees:paypal",
+	version: "1.2.1",
+	name: "19degrees:paypal-extended-secured",
 	git: "https://github.com/19degrees/meteor-paypal-extended"
 });
 
